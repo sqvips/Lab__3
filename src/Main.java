@@ -26,7 +26,7 @@ public class Main {
         graphDisplay.showTop2Limit(18); // Отображаем вершины с весом входящих рёбер <= 18
         graphDisplay.showTopsSortedWeight(); // Отображаем вершины, отсортированные по весу
 
-        graph.combineEdges(2, 1); // Объединяем рёбра между вершинами 2 и 1
+        graph.combineEdges2(2, 1); // Объединяем рёбра между вершинами 2 и 1
         graphDisplay.show(); // Отображаем граф после объединения
 
         graph.changeEdgeWeight(1, 2, -100); // Изменяем вес ребра между вершинами 1 и 2 на -100
