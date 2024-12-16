@@ -40,15 +40,20 @@ class GraphDisplay {
 
     // Метод для отображения вершин с весом входящих рёбер меньше или равным заданному значению
     public void showTop2Limit(int value) {
-        int[] top2Weight = new int[1001]; // Массив для хранения весов
+        int[] top2Weight = new int[1001]; // Массив для хранения весов входящих рёбер
 
+        // Перебираем все рёбра графа
         for (Edge edge : graph.getEdges()) {
-            int top2 = edge.getTop2();
+            int top1 = edge.getTop1(); // Первая вершина
+            int top2 = edge.getTop2(); // Вторая вершина
+            int weight = edge.getWeight(); // Вес ребра
 
-            top2Weight[top2] += edge.getWeight(); // Суммируем веса для каждой вершины
+            // Суммируем вес для обеих вершин
+            top2Weight[top1] += weight; // Учитываем вес для первой вершины
+            top2Weight[top2] += weight; // Учитываем вес для второй вершины
         }
 
-        // Выводим вершины, соответствующие условию
+        // Выводим вершины, у которых общий вес входящих рёбер не превышает указанного значения
         for (int i = 0; i < top2Weight.length; i++) {
             if (top2Weight[i] <= value && top2Weight[i] > 0) {
                 System.out.println(i);
