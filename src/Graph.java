@@ -23,6 +23,40 @@ class Graph {
     }
 
     // Метод для объединения рёбер между двумя вершинами
+    public void combineEdges(int top_1, int top_2) {
+        List<Edge> edgesToCombine = new ArrayList<>(); // Список рёбер для объединения
+        int totalWeight = 0; // Общий вес объединяемых рёбер
+        int firstEdgeIndex = -1; // Индекс первого рёбер для вставки нового
+
+        // Поиск рёбер, которые нужно объединить
+        for (int i = 0; i < edges.size(); i++) {
+            Edge edge = edges.get(i);
+
+            if ((edge.getTop1() == top_1 && edge.getTop2() == top_2) || (edge.getTop1() == top_2 && edge.getTop2() == top_1)) {
+                edgesToCombine.add(edge); // Добавляем ребро в список для объединения
+                totalWeight += edge.getWeight(); // Суммируем вес рёбер
+
+                if (firstEdgeIndex == -1) {
+                    firstEdgeIndex = i; // Запоминаем индекс первого ребра
+                }
+            }
+        }
+
+        // Если рёбер для объединения не найдено
+        if (edgesToCombine.isEmpty()) {
+            System.out.println("Нет рёбер для объединения между вершинами " + top_1 + " и " + top_2);
+            return;
+        }
+
+        edges.removeAll(edgesToCombine); // Удаляем все объединяемые рёбра
+
+        Edge firstEdge = edgesToCombine.get(0); // Получаем первое ребро
+        Edge newEdge = new Edge(top_1, top_2, totalWeight); // Создаем новое ребро с общим весом
+
+        edges.add(firstEdgeIndex, newEdge); // Вставляем новое ребро в список
+    }
+
+    // Метод для объединения рёбер между двумя вершинами (другой вариант)
     public void combineEdges2(int top_1, int top_2) {
         List<Edge> edgesToCombine = new ArrayList<>(); // Список рёбер для объединения
         int totalWeight = 0; // Общий вес объединяемых рёбер
@@ -31,26 +65,26 @@ class Graph {
         // Поиск рёбер, которые нужно объединить
         for (int i = 0; i < edges.size(); i++) {
             Edge edge = edges.get(i);
-    
+
             if ((edge.getTop1() == top_1 && edge.getTop2() == top_2) || (edge.getTop1() == top_2 && edge.getTop2() == top_1)) {
                 edgesToCombine.add(edge); // Добавляем ребро в список для объединения
                 totalWeight += edge.getWeight(); // Суммируем вес рёбер
-    
+
                 if (firstEdgeIndex == -1) {
                     firstEdgeIndex = i; // Запоминаем индекс первого ребра
                 }
             }
         }
-    
+
         // Если рёбер для объединения не найдено
         if (edgesToCombine.isEmpty()) {
             System.out.println("Нет рёбер для объединения между вершинами " + top_1 + " и " + top_2);
             return;
         }
-    
+
         Edge firstEdge = edgesToCombine.get(0); // Получаем первое ребро
         Edge newEdge = new Edge(top_1, top_2, totalWeight); // Создаем новое ребро с общим весом
-    
+
         edges.remove(firstEdgeIndex); // Удаляем первое ребро
         edges.add(firstEdgeIndex, newEdge); // Вставляем новое ребро в список
     }
@@ -99,13 +133,15 @@ class Graph {
     // Метод для удаления вершин с максимальным весом и минимальным количеством входящих рёбер
     public void removeTopsMinMax() {
         int n = 1001; // Максимальное количество вершин
-        int[] incomingWeights = new int[n]; // Массив для хранения весов входящих рёбер
-        int[] incomingCounts = new int[n]; // Массив для хранения количества входящих рёбер
+        int[] incomingWeights = new int[n]; // Массив для хранения весов рёбер
+        int[] incomingCounts = new int[n]; // Массив для хранения количества рёбер
 
-        // Подсчет весов и количества входящих рёбер
+        // Подсчет весов и количества рёбер для каждой вершины
         for (Edge edge : edges) {
-            incomingWeights[edge.getTop2()] += edge.getWeight(); // Суммируем веса
-            incomingCounts[edge.getTop2()]++; // Увеличиваем счетчик
+            incomingWeights[edge.getTop1()] += edge.getWeight(); // Суммируем веса для первой вершины
+            incomingWeights[edge.getTop2()] += edge.getWeight(); // Суммируем веса для второй вершины
+            incomingCounts[edge.getTop1()]++; // Увеличиваем счетчик для первой вершины
+            incomingCounts[edge.getTop2()]++; // Увеличиваем счетчик для второй вершины
         }
 
         // Поиск максимального веса
@@ -116,7 +152,7 @@ class Graph {
             }
         }
 
-        // Поиск минимального количества входящих рёбер
+        // Поиск минимального количества рёбер
         int minCount = Integer.MAX_VALUE;
         for (int count : incomingCounts) {
             if (count > 0 && count < minCount) {
@@ -124,7 +160,7 @@ class Graph {
             }
         }
 
-        // Удаление вершин с максимальным весом или минимальным количеством входящих рёбер
+        // Удаление вершин с максимальным весом или минимальным количеством рёбер
         for (int i = 0; i < n; i++) {
             if (incomingWeights[i] == maxWeight || (incomingCounts[i] > 0 && incomingCounts[i] == minCount)) {
                 removeTops(i); // Удаляем вершину
@@ -139,8 +175,8 @@ class Graph {
 
             for (Edge currentEdge : edges) { // Проверяем существующие рёбра
                 if (currentEdge.getTop1() == newGraphEdge.getTop1() && currentEdge.getTop2() == newGraphEdge.getTop2()) {
-                    currentEdge.setWeight(currentEdge.getWeight() + newGraphEdge.getWeight()); // Объединяем веса
-                    found = true; // Устанавливаем флаг
+                    currentEdge.setWeight(currentEdge.getWeight() + newGraphEdge.getWeight()); // Складываем веса
+                    found = true; // Устанавливаем флаг, если ребро найдено
                     break; // Выходим из цикла
                 }
             }
@@ -152,3 +188,4 @@ class Graph {
         }
     }
 }
+
