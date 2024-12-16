@@ -56,38 +56,6 @@ class Graph {
         edges.add(firstEdgeIndex, newEdge); // Вставляем новое ребро в список
     }
 
-    // Метод для объединения рёбер между двумя вершинами (другой вариант)
-    public void combineEdges2(int top_1, int top_2) {
-        List<Edge> edgesToCombine = new ArrayList<>(); // Список рёбер для объединения
-        int totalWeight = 0; // Общий вес объединяемых рёбер
-        int firstEdgeIndex = -1; // Индекс первого рёбер для вставки нового
-
-        // Поиск рёбер, которые нужно объединить
-        for (int i = 0; i < edges.size(); i++) {
-            Edge edge = edges.get(i);
-
-            if ((edge.getTop1() == top_1 && edge.getTop2() == top_2) || (edge.getTop1() == top_2 && edge.getTop2() == top_1)) {
-                edgesToCombine.add(edge); // Добавляем ребро в список для объединения
-                totalWeight += edge.getWeight(); // Суммируем вес рёбер
-
-                if (firstEdgeIndex == -1) {
-                    firstEdgeIndex = i; // Запоминаем индекс первого ребра
-                }
-            }
-        }
-
-        // Если рёбер для объединения не найдено
-        if (edgesToCombine.isEmpty()) {
-            System.out.println("Нет рёбер для объединения между вершинами " + top_1 + " и " + top_2);
-            return;
-        }
-
-        Edge firstEdge = edgesToCombine.get(0); // Получаем первое ребро
-        Edge newEdge = new Edge(top_1, top_2, totalWeight); // Создаем новое ребро с общим весом
-
-        edges.remove(firstEdgeIndex); // Удаляем первое ребро
-        edges.add(firstEdgeIndex, newEdge); // Вставляем новое ребро в список
-    }
 
     // Метод для изменения веса ребра между двумя вершинами
     public void changeEdgeWeight(int top_1, int top_2, int weightNew) {
